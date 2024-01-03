@@ -3,56 +3,54 @@ return {
     "williamboman/mason.nvim",
     config = function()
       require("mason").setup()
-    end
+    end,
   },
   {
     "williamboman/mason-lspconfig.nvim",
-    config = function()
-      require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls",
-          "clangd",
-          "dockerls",
-          "html",
-          "jsonls",
-          "jdtls",
-          "tsserver",
-          "pyright",
-          "sqlls",
-          "rubocop",
-          }
-      })
-    end
+    lazy = false,
+    opts = {
+      auto_install = true,
+    },
   },
   {
     "neovim/nvim-lspconfig",
+    lazy = false,
     config = function()
-      local lspconfig = require('lspconfig')
-      lspconfig.lua_ls.setup({})
-      lspconfig.clangd.setup({})
-      lspconfig.html.setup({})
-      lspconfig.jsonls.setup({})
-      lspconfig.jdtls.setup({})
-      lspconfig.tsserver.setup({})
-      lspconfig.pyright.setup({})
-      lspconfig.sqlls.setup({})
+      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+      local lspconfig = require("lspconfig")
+      lspconfig.lua_ls.setup({
+        capabilities = capabilities
+      })
+      lspconfig.clangd.setup({
+        capabilities = capabilities
+      })
+      lspconfig.html.setup({
+        capabilities = capabilities
+      })
+      lspconfig.jsonls.setup({
+        capabilities = capabilities
+      })
+      lspconfig.jdtls.setup({
+        capabilities = capabilities
+      })
+      lspconfig.tsserver.setup({
+        capabilities = capabilities
+      })
+      lspconfig.pyright.setup({
+        capabilities = capabilities
+      })
+      lspconfig.sqlls.setup({
+        capabilities = capabilities
+      })
       lspconfig.rubocop.setup({
-        config = function()
-          vim.opt.signcolumn = "yes"
-          vim.api.nvim_create_autocmd("FileType", {
-            pattern = "ruby",
-            callback = function()
-              vim.lsp.start {
-                name = "rubocop",
-                cmd = { "bundle", "exec", "rubocop", "--lsp" },
-              }
-            end,
-          })
-        end
+        capabilities = capabilities
       })
 
-      vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
-      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
-      vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, {})
-    end
-  }
+      vim.keymap.set("n", "<leader>gh", vim.lsp.buf.hover, {})
+      vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
+      vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, {})
+      vim.keymap.set("n", "<leader>gc", vim.lsp.buf.code_action, {})
+    end,
+  },
 }
